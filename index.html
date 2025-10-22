@@ -10,58 +10,50 @@
             --secondary: #3498db;
             --background: #f8f9fa;
         }
-
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); [cite: 3]
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-
         .container {
             max-width: 800px;
-            margin: 0 auto; [cite: 5]
+            margin: 0 auto;
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-
         .config-section {
             margin-bottom: 30px;
-            border-bottom: 2px solid #eee; [cite: 7]
+            border-bottom: 2px solid #eee;
             padding-bottom: 20px;
         }
-
         .input-group {
-            margin-bottom: 15px; [cite: 8]
+            margin-bottom: 15px;
         }
-
         label {
             display: block;
-            margin-bottom: 5px; [cite: 9]
+            margin-bottom: 5px;
             color: var(--primary);
             font-weight: 500;
         }
-
         input, select, textarea {
             width: 100%;
-            padding: 10px; [cite: 10]
+            padding: 10px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
-            box-sizing: border-box; /* 确保padding不会撑大宽度 */
+            box-sizing: border-box; /* 关键：防止padding撑开宽度 */
             transition: border-color 0.3s;
         }
-
         input:focus, select:focus, textarea:focus {
             border-color: var(--secondary);
-            outline: none; [cite: 12]
+            outline: none;
         }
-
         button {
             background: var(--secondary);
-            color: white; [cite: 13]
+            color: white;
             border: none;
             padding: 12px 25px;
             border-radius: 8px;
@@ -69,66 +61,59 @@
             font-size: 16px;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52,152,219,0.3); [cite: 15]
+            box-shadow: 0 5px 15px rgba(52,152,219,0.3);
         }
-        
+        /* 卡片支付按钮 */
         button.pay-with-card {
-            background-color: #2c3e50; /* 卡片支付按钮使用深色 */
+            background-color: var(--primary);
             width: 100%;
             margin-top: 15px;
         }
-        
         button.pay-with-card:hover {
              box-shadow: 0 5px 15px rgba(44,62,80,0.3);
         }
-
-        #payment-container {
-            margin-top: 20px;
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
-
         .preview-section {
             background: #f8f9fa;
-            padding: 20px; [cite: 17]
+            padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
         }
-
         #generated-link {
             word-break: break-all;
-            color: var(--secondary); [cite: 18]
+            color: var(--secondary);
             font-weight: bold;
         }
-
-        /* 信用卡字段的容器 */
+        
+        /* 智能2D卡片字段的样式 */
         .card-field {
             border: 2px solid #ddd;
             border-radius: 8px;
             padding: 10px;
-            height: 20px; /* 为PayPal的iframe提供固定高度 */
+            height: 20px; /* 必须给iframe一个高度 */
             background-color: white;
-            margin-bottom: 10px;
         }
-        
         .card-field:focus-within {
              border-color: var(--secondary);
         }
-
+        .card-field-group {
+            margin-bottom: 10px;
+        }
+        
+        /* 消息提示 */
         #card-message-container {
             text-align: center;
             margin-top: 10px;
         }
-        
-        .error-message {
-            color: #d90000;
-        }
-        
-        .success-message {
-             color: #008000;
-             font-weight: bold;
-        }
+        .error-message { color: #d90000; }
+        .success-message { color: #008000; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -139,58 +124,55 @@
                 <label>PayPal Client ID:</label>
                 <input type="text" id="clientId" placeholder="Enter Client ID">
             </div>
- 
             <div class="input-group">
                 <label>Product Description:</label>
-                <textarea id="productDesc" rows="3">Digital Product</textarea> [cite: 19]
+                <textarea id="productDesc" rows="3">Digital Product</textarea>
             </div>
             <div class="input-group">
                 <label>Amount:</label>
-                <input type="number" id="amount" step="0.01" value="10.00"> [cite: 20]
+                <input type="number" id="amount" step="0.01" value="10.00">
             </div>
             <div class="input-group">
                 <label>Currency:</label>
                 <select id="currency">
                     <option value="USD">USD</option>
-                    <option value="CAD">CAD</option> [cite: 21]
+                    <option value="CAD">CAD</option>
                 </select>
             </div>
-            <button onclick="generateLink()">Generate Link & Init Payment</button> [cite: 28]
+            <button onclick="generateLink()">Generate Link & Init Payment</button>
         </div>
 
         <div class="preview-section">
             <h3>Payment Preview</h3>
             
-            <div id="payment-container">
-                
-                <div id="paypal-button-container" style="margin-bottom: 20px;"></div>
-                
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                <p style="text-align: center; color: #555; font-weight: 500;">Or Pay with Card</p>
-
-                <div id="card-fields-container">
-                    <label>Card Number</label>
-                    <div id="card-number-field" class="card-field"></div>
-                    
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 1;">
-                            <label>Expiry</label>
-                            <div id="card-expiry-field" class="card-field"></div>
-                        </div>
-                        <div style="flex: 1;">
-                            <label>CVV</label>
-                            <div id="card-cvv-field" class="card-field"></div>
-                        </div>
-                    </div>
-                    
-                    <button id="pay-with-card-button" class="pay-with-card">Pay with Card</button>
-                    
-                    <div id="card-message-container"></div>
-                </div>
-
-            </div>
+            <div id="paypal-button-container"></div>
             
-            <p id="generated-link" style="margin-top: 20px;"></p> [cite: 22]
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+
+            <div id="smart-2d-card-container">
+                <p style="text-align: center; color: #555; font-weight: 500; margin-top: -10px;">Or Pay with Card (Smart 2D)</p>
+                
+                <div class="card-field-group">
+                    <label for="card-number-field">Card Number</label>
+                    <div id="card-number-field" class="card-field"></div>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <div class="card-field-group" style="flex: 1;">
+                        <label for="card-expiry-field">Expiry</label>
+                        <div id="card-expiry-field" class="card-field"></div>
+                    </div>
+                    <div class="card-field-group" style="flex: 1;">
+                        <label for="card-cvv-field">CVV</label>
+                        <div id="card-cvv-field" class="card-field"></div>
+                    </div>
+                </div>
+                
+                <button id="pay-with-card-button" class="pay-with-card">Pay with Card</button>
+                <div id="card-message-container"></div>
+            </div>
+       
+            <p id="generated-link" style="margin-top: 20px;"></p>
         </div>
     </div>
 
@@ -199,41 +181,39 @@
     <script>
         // 保存配置到本地存储
         function saveConfig() {
-            localStorage.setItem('clientId', document.getElementById('clientId').value); [cite: 23]
+            localStorage.setItem('clientId', document.getElementById('clientId').value);
         }
 
         // 加载保存的配置
         window.onload = function() {
             const savedClientId = localStorage.getItem('clientId');
-            if(savedClientId) { [cite: 24]
-                document.getElementById('clientId').value = savedClientId; [cite: 25]
+            if(savedClientId) {
+                document.getElementById('clientId').value = savedClientId;
             }
         }
 
-        // 生成支付链接并初始化PayPal
+        // 生成支付链接
         function generateLink() {
             saveConfig();
-            const baseUrl = window.location.href.split('?')[0]; [cite: 26]
+            const baseUrl = window.location.href.split('?')[0];
             const params = new URLSearchParams({
                 clientId: document.getElementById('clientId').value,
                 desc: document.getElementById('productDesc').value,
                 amount: document.getElementById('amount').value,
                 currency: document.getElementById('currency').value
             });
-            // 显示生成的链接
             document.getElementById('generated-link').innerHTML = 
-                `${baseUrl}?${params.toString()}`; [cite: 27]
+                `${baseUrl}?${params.toString()}`;
             
-            // 初始化支付界面
+            // 初始化PayPal支付
             initializePayPal();
         }
 
-        // 初始化PayPal（核心逻辑）
+        // 初始化PayPal（这是核心）
         function initializePayPal() {
             const clientId = document.getElementById('clientId').value;
-            const currency = document.getElementById('currency').value; [cite: 29]
+            const currency = document.getElementById('currency').value;
             
-            // 检查 Client ID 是否为空
             if (!clientId) {
                 alert('Please enter a PayPal Client ID');
                 return;
@@ -246,185 +226,174 @@
             document.getElementById('card-cvv-field').innerHTML = "";
             document.getElementById('card-message-container').innerHTML = "";
 
-            // 动态重新加载SDK（按您的原始代码逻辑）
+            // 动态重新加载SDK（保留您原有的、能正常工作的逻辑）
             delete window.paypal;
-            const script = document.createElement('script'); [cite: 30]
+            const script = document.createElement('script');
             script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&components=buttons,card-fields&currency=${currency}`;
             script.async = true;
             document.head.appendChild(script);
 
-            // SDK加载完毕后，初始化按钮和卡片字段
+            // SDK加载完毕后，初始化所有支付组件
             script.onload = () => {
                 
                 if (typeof paypal === "undefined") {
-                    document.getElementById('card-message-container').innerHTML = "<div class'error-message'>Error loading PayPal SDK. Check Client ID.</div>";
+                    document.getElementById('card-message-container').innerHTML = "<div class='error-message'>Error loading PayPal SDK. Check Client ID.</div>";
                     return;
                 }
 
-                // === 1. PayPal 按钮逻辑 ===
-                paypal.Buttons({
-                    style: {
-                        layout: 'vertical',
-                        color: 'blue'
-                    }, [cite: 31]
-                    createOrder: function(data, actions) {
-                        return actions.order.create({
-                            purchase_units: [{
-                                category: "DIGITAL_GOODS", [cite: 32]
-                                description: document.getElementById('productDesc').value,
-                                amount: {
-                                    value: document.getElementById('amount').value, [cite: 33]
-                                    currency_code: currency
+                // === 1. 渲染PayPal按钮 (您原有的逻辑) ===
+                // 我们将它渲染到它自己的容器: #paypal-button-container
+                try {
+                    paypal.Buttons({
+                        style: {
+                            layout: 'vertical',
+                            color: 'blue'
+                        },
+                        createOrder: function(data, actions) {
+                            return actions.order.create({
+                                purchase_units: [{
+                                    category: "DIGITAL_GOODS",
+                                    description: document.getElementById('productDesc').value,
+                                    amount: {
+                                        value: document.getElementById('amount').value,
+                                        currency_code: currency
+                                    }
+                                }],
+                                application_context: {
+                                    shipping_preference: 'NO_SHIPPING'
                                 }
-                            }],
-                            application_context: {
-                                shipping_preference: 'NO_SHIPPING' [cite: 35]
-                            }
-                        });
-                    },
-                    onApprove: function(data, actions) {
-                        return actions.order.capture().then(function(details) { [cite: 36]
-                            alert('Payment completed (PayPal Button)');
-                            console.log(details);
-                        });
-                    },
-                    onError: function(err) {
-                        alert('An error occurred with the PayPal button.');
-                        console.error(err);
-                    }
-                }).render('#paypal-button-container'); // 渲染到按钮专用容器
-
-
-                // === 2. 智能2D (CardFields) 逻辑 ===
-                
-                // 初始化 CardFields
-                const cardFields = paypal.CardFields({
-                    style: {
-                        '.input': {
-                            fontSize: '16px',
-                            fontFamily: "'Helvetica Neue', sans-serif" [cite: 39]
-                        }
-                    },
-                    // (A) 卡片支付的 createOrder
-                    createOrder: function(data, actions) {
-                        // 逻辑与 PayPal 按钮的 createOrder 完全相同
-                        return actions.order.create({
-                            purchase_units: [{
-                                category: "DIGITAL_GOODS", [cite: 32]
-                                description: document.getElementById('productDesc').value,
-                                amount: {
-                                    value: document.getElementById('amount').value, [cite: 33]
-                                    currency_code: currency
-                                }
-                            }],
-                            application_context: {
-                                shipping_preference: 'NO_SHIPPING' [cite: 35]
-                            }
-                        });
-                    },
-                    // (B) 卡片支付的 onApprove (智能2D核心)
-                    onApprove: function(data, actions) {
-                        const messageContainer = document.getElementById('card-message-container');
-                        messageContainer.innerHTML = "";
-                        
-                        // 关键：检查银行是否要求3D安全验证
-                        if (data.contingency === "SCA_REQUIRED") {
-                            // **智能3D流程**
-                            messageContainer.innerHTML = "<div class='error-message'>Your bank requires extra security verification...</div>";
-                            
-                            // 弹出3D安全验证窗口
-                            return actions.order.confirm().then(function(confirmData) {
-                                // 3D 验证成功，捕获交易
-                                console.log("3D verification successful: ", confirmData);
-                                return captureOrder(data.orderID);
-                            }).catch(function(err) {
-                                // 3D 验证失败或被取消
-                                console.error("3D verification failed: ", err);
-                                messageContainer.innerHTML = "<div class='error-message'>3D verification failed or was cancelled.</div>";
-                                document.getElementById('pay-with-card-button').disabled = false;
-                                document.getElementById('pay-with-card-button').innerText = "Pay with Card";
                             });
-
-                        } else {
-                            // **智能2D (无摩擦) 流程**
-                            // 银行不需要验证 (常见于美国客户)
-                            console.log("No 3D verification needed, capturing order.");
-                            return captureOrder(data.orderID);
+                        },
+                        onApprove: function(data, actions) {
+                            return actions.order.capture().then(function(details) {
+                                alert('Payment completed (via PayPal Button)');
+                                console.log(details);
+                                // 支付成功后可以清空表单
+                                document.getElementById('smart-2d-card-container').innerHTML = `<div class='success-message'>Payment Completed!</div>`;
+                            });
+                        },
+                        onError: function(err) {
+                            alert('PayPal Button Error: ' + err);
+                            console.error("PayPal Button Error:", err);
                         }
-                    },
-                    // (C) 卡片支付的错误处理
-                    onError: function(err) {
-                        console.error("CardFields Error: ", err);
-                        document.getElementById('card-message-container').innerHTML = `<div class='error-message'>${err.message || 'Invalid card details.'}</div>`;
-                        document.getElementById('pay-with-card-button').disabled = false;
-                        document.getElementById('pay-with-card-button').innerText = "Pay with Card";
-                    }
-                });
+                    }).render('#paypal-button-container'); // 渲染到按钮容器
+                } catch (err) {
+                    console.error("Failed to render PayPal Buttons:", err);
+                    document.getElementById('paypal-button-container').innerHTML = "<div class='error-message'>PayPal Buttons failed to load.</div>";
+                }
 
-                // (D) 渲染卡片字段
-                if (cardFields.isEligible()) {
-                    cardFields.Number().render("#card-number-field");
-                    cardFields.Expiry().render("#card-expiry-field");
-                    cardFields.CVV().render("#card-cvv-field");
-                    
-                    // (E) 绑定 "Pay with Card" 按钮
-                    document.getElementById('pay-with-card-button').addEventListener('click', () => {
+
+                // === 2. 渲染智能2D卡片字段 (新增的逻辑) ===
+                let cardFields; // 将 cardFields 提升到
+                try {
+                    cardFields = paypal.CardFields({
+                        style: {
+                            '.input': {
+                                fontSize: '16px',
+                                fontFamily: "'Helvetica Neue', sans-serif"
+                            }
+                        },
+                        // (A) 卡片支付的 createOrder
+                        createOrder: function(data, actions) {
+                            // 清空旧消息
+                            document.getElementById('card-message-container').innerHTML = "";
+                            return actions.order.create({
+                                purchase_units: [{
+                                    category: "DIGITAL_GOODS",
+                                    description: document.getElementById('productDesc').value,
+                                    amount: {
+                                        value: document.getElementById('amount').value,
+                                        currency_code: currency
+                                    }
+                                }],
+                                application_context: {
+                                    shipping_preference: 'NO_SHIPPING'
+                                }
+                            });
+                        },
+                        // (B) 卡片支付的 onApprove (智能2D核心)
+                        onApprove: function(data, actions) {
+                            const messageContainer = document.getElementById('card-message-container');
+                            
+                            // 关键：检查银行是否要求3D安全验证
+                            if (data.contingency === "SCA_REQUIRED") {
+                                // **智能3D流程**
+                                messageContainer.innerHTML = "<div class='error-message'>Your bank requires extra security verification...</div>";
+                                
+                                // 弹出3D安全验证窗口
+                                return actions.order.confirm().then(function(confirmData) {
+                                    // 3D 验证成功，捕获交易
+                                    console.log("3D verification successful: ", confirmData);
+                                    return actions.order.capture().then(handlePaymentSuccess);
+                                }).catch(function(err) {
+                                    // 3D 验证失败或被取消
+                                    console.error("3D verification failed: ", err);
+                                    messageContainer.innerHTML = "<div class='error-message'>3D verification failed or was cancelled.</div>";
+                                    document.getElementById('pay-with-card-button').disabled = false;
+                                    document.getElementById('pay-with-card-button').innerText = "Pay with Card";
+                                });
+                            } else {
+                                // **智能2D (无摩擦) 流程**
+                                // 银行不需要验证 (常见于美国客户)
+                                console.log("No 3D verification needed, capturing order.");
+                                return actions.order.capture().then(handlePaymentSuccess);
+                            }
+                        },
+                        // (C) 卡片支付的错误处理
+                        onError: function(err) {
+                            console.error("CardFields Error: ", err);
+                            document.getElementById('card-message-container').innerHTML = `<div class='error-message'>${err.message || 'Invalid card details.'}</div>`;
+                            document.getElementById('pay-with-card-button').disabled = false;
+                            document.getElementById('pay-with-card-button').innerText = "Pay with Card";
+                        }
+                    });
+
+                    // (D) 渲染卡片字段到它们各自的容器
+                    if (cardFields.isEligible()) {
+                        cardFields.Number().render("#card-number-field");
+                        cardFields.Expiry().render("#card-expiry-field");
+                        cardFields.CVV().render("#card-cvv-field");
+                    } else {
+                        document.getElementById('smart-2d-card-container').innerHTML = "<div class='error-message'>Advanced card fields are not available.</div>";
+                    }
+
+                } catch (err) {
+                    console.error("Failed to render CardFields:", err);
+                    document.getElementById('smart-2d-card-container').innerHTML = "<div class='error-message'>Card Fields failed to load.</div>";
+                }
+                
+                // (E) 绑定 "Pay with Card" 按钮
+                document.getElementById('pay-with-card-button').addEventListener('click', () => {
+                    if (cardFields) {
                         const button = document.getElementById('pay-with-card-button');
                         button.disabled = true;
                         button.innerText = "Processing...";
-                        document.getElementById('card-message-container').innerHTML = ""; // 清空消息
-
+                        
                         // 提交卡片信息，这将触发上面的 createOrder 和 onApprove
-                        cardFields.submit().catch(function(err) {
-                            // 捕获提交前的本地验证错误
-                            console.error("Card submit validation failed: ", err);
-                            button.disabled = false;
-                            button.innerText = "Pay with Card";
-                        });
-                    });
-
-                } else {
-                    document.getElementById('card-fields-container').innerHTML = "<div class='error-message'>Advanced card fields are not available.</div>";
-                }
+                        cardFields.submit();
+                    }
+                });
             };
             
             // SDK 加载失败处理
             script.onerror = () => {
                 console.error("Failed to load PayPal SDK.");
-                document.getElementById('card-message-container').innerHTML = "<div class='error-message'>Failed to load PayPal SDK. Check Client ID and internet connection.</div>";
+                document.getElementById('paypal-button-container').innerHTML = "<div class='error-message'>Failed to load PayPal SDK. Check Client ID and internet connection.</div>";
             };
         }
         
-        // (F) 封装一个通用的捕获函数
-        function captureOrder(orderID) {
-            const messageContainer = document.getElementById('card-message-container');
-            const button = document.getElementById('pay-with-card-button');
-            
-            // 在真实环境中, 您应该在这里调用您的服务器来捕获订单。
-            // 但在纯静态HTML中，我们只能模拟成功。
-            // 为了演示，我们将模拟一个成功的捕获。
-            
-            console.log("Order captured (simulated): ", orderID);
-            
-            // 显示成功消息
-            messageContainer.innerHTML = `<div class='success-message'>Payment Successful! Order ID: ${orderID}</div>`;
-            
-            // 隐藏支付表单，显示感谢信息
-            document.getElementById('card-fields-container').innerHTML = `<h3>Thank you for your payment!</h3><p>Order ID: ${orderID}</p>`;
-            
-            // 注意：在实际的 actions.order.capture() 中，您会这样做：
-            /*
-            return actions.order.capture().then(function(details) {
-                console.log("Order captured (real): ", details);
-                messageContainer.innerHTML = `<div class='success-message'>Payment Successful! Order ID: ${details.id}</div>`;
-                document.getElementById('card-fields-container').innerHTML = `<h3>Thank you!</h3><p>Order ID: ${details.id}</p>`;
-            }).catch(err => {
-                 console.error("Capture failed: ", err);
-                 messageContainer.innerHTML = "<div class='error-message'>Payment failed at final capture. Please try again.</div>";
-                 button.disabled = false;
-                 button.innerText = "Pay with Card";
-            });
-            */
+        // (F) 卡片支付成功的处理函数
+        function handlePaymentSuccess(details) {
+            console.log("Card Payment Successful:", details);
+            const container = document.getElementById('smart-2d-card-container');
+            container.innerHTML = `
+                <div class='success-message'>Payment Successful!</div>
+                <p style="text-align: center; font-size: 14px; word-break: break-all;">
+                    Order ID: ${details.id}<br>
+                    Payer: ${details.payer.email_address || 'N/A'}
+                </p>`;
+            // 同时也清空PayPal按钮
+            document.getElementById('paypal-button-container').innerHTML = "";
         }
     </script>
 </body>
